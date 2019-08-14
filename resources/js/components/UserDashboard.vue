@@ -23,7 +23,8 @@
         },
         data() {
             return {
-                userSelectedFromChild: {}
+                userSelectedFromChild: {},
+                number: {}
             }
         },
         methods: {

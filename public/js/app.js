@@ -1873,7 +1873,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      userSelectedFromChild: {}
+      userSelectedFromChild: {},
+      number: {}
     };
   },
   methods: {
@@ -1915,12 +1916,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "UserDetail",
   props: {
     userDetailInfo: {
       type: Object
-    }
+    },
+    numberDetail: {}
   }
 });
 
@@ -38102,6 +38107,12 @@ var render = function() {
               "\n            Address: " +
                 _vm._s(_vm.userDetailInfo.address) +
                 "\n        "
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "user-address" }, [
+            _vm._v(
+              "\n            Number: " + _vm._s(_vm.numberDetail) + "\n        "
             )
           ])
         ])

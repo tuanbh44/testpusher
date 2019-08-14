@@ -13,6 +13,9 @@
             <div class="user-address">
                 Address: {{ userDetailInfo.address }}
             </div>
+            <div class="user-address">
+                Number: {{ numberDetail }}
+            </div>
         </div>
     </div>
 </template>
@@ -23,6 +26,9 @@
         props: {
             userDetailInfo: {
                 type: Object
+            },
+            numberDetail: {
+
             }
         }
     }
