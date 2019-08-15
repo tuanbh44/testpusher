@@ -36,3 +36,17 @@ Route::get('/user-api', [
     'as' => 'user',
     'uses' => 'UserApiController@getUserApi'
 ]);
+
+Route::get('/', function () {
+    return view('welcome');
+})->middleware('auth');
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::resource('users', 'UserController');
+
+Route::get('/getCurrentUser', function () {
+    return Auth::user()->load('roles');
+});
+
+Route::match(['get', 'post'], '/logout', 'Auth\LoginController@logout')->name('logout');

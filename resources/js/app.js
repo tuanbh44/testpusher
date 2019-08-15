@@ -24,9 +24,10 @@ Vue.component('conditional-rendering', require('./components/ConditionalRenderin
 Vue.component('user-dashboard', require('./components/UserDashboard.vue'));
 Vue.component('life-cycle', require('./components/LifeCycle.vue'));
 Vue.component('binding-html', require('./components/BindingHTML.vue'));
-Vue.component('form-input-binding', require('./components/FormInputBinding.vue').default);
-Vue.component('event-handing', require('./components/EventHanding.vue').default);
-Vue.component('parent', require('./components/Parent.vue').default)
+Vue.component('form-input-binding', require('./components/FormInputBinding.vue'));
+Vue.component('event-handing', require('./components/EventHanding.vue'));
+Vue.component('parent', require('./components/Parent.vue'));
+Vue.component('User', require('./components/User.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
