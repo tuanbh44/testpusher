@@ -14,7 +14,12 @@
     <body>
         <div id="app">
             {{ csrf_field() }}
-            <user-dashboard></user-dashboard>
+{{--            <user-dashboard></user-dashboard>--}}
+{{--            <life-cycle></life-cycle>--}}
+{{--            <binding-html></binding-html>--}}
+{{--            <form-input-binding></form-input-binding>--}}
+{{--            <event-handing></event-handing>--}}
+            <parent></parent>
         </div>
         <script src="{{ asset('js/app.js') }}"></script>
     </body>
