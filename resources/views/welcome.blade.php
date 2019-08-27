@@ -14,7 +14,7 @@
     <body>
         <div id="app">
             {{ csrf_field() }}
-            <User></User>
+           <User></User>
         </div>
         <script src="{{ asset('js/app.js') }}"></script>
     </body>

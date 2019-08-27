@@ -31,58 +31,116 @@
             </div>
         </nav>
         <div class="list_user table-responsive container">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <td>ID</td>
-                    <td>Name</td>
-                    <td>Email</td>
-                    <td>Role</td>
-                    <td v-if="checkIsAdmin">Action</td>
-                </tr>
-                </thead>
-                <tbody v-if="list_users.length">
-                <tr v-for="user in list_users">
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>
-        					<span v-for="role in user.roles">
-        						{{ role.name }}
-        					</span>
-                    </td>
-                    <td v-if="checkIsAdmin">
-                        <button class="btn btn-success">
-                            Edit
-                        </button>
-                        <button class="btn btn-danger">Delete</button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <br>
+            <b-pagination
+                    v-model="currentPage"
+                    :total-rows="rows"
+                    :per-page="perPage"
+                    aria-controls="my-table"
+                    align="center"
+            ></b-pagination>
+            <b-table
+                    id="my-table"
+                    :items="list_users"
+                    :per-page="perPage"
+                    :current-page="currentPage"
+                    :fields="fields"
+                    :caption-top="true"
+                    :sort-by.sync="sortBy"
+                    :sort-desc.sync="sortDesc"
+                    responsive="sm"
+            >
+                <template slot="[role]" slot-scope="data">
+                    <div v-for="role in data.item.roles ">
+                    {{ role.name }}
+                    </div>
+                </template>
+                <template slot="[action]" slot-scope="data">
+                    <div v-if="checkIsAdmin()">
+                    <b-button variant="success" @click="showEditModal(data.item, data.index, $event.target)">
+                        Edit
+                    </b-button>
+                    <b-button variant="danger">Delete</b-button>
+                    </div>
+                </template>
+            </b-table>
         </div>
         <hr>
-        <div class="create-user container" v-if="checkIsAdmin">
-            <div class="row">
-                <div class="col-md-3">
-                    <input type="text" v-model="userCreate.name" class="form-control" placeholder="Name...">
+        <div class="create-user container" >
+            <b-form @submit="createUser">
+                <div class="row">
+                    <div class="col-md-3">
+                        <b-input v-model="userCreate.name" :state="nameValidation" placeholder="Name..."></b-input>
+                        <b-form-invalid-feedback :state="nameValidation">
+                            Your name must be longer 8 characters.
+                        </b-form-invalid-feedback>
+                        <b-form-valid-feedback :state="nameValidation">
+                            Success!
+                        </b-form-valid-feedback>
+                    </div>
+                    <div class="col-md-3">
+                        <b-input v-model="userCreate.email" :state="emailValidation" placeholder="User email..."></b-input>
+                        <b-form-invalid-feedback :state="emailValidation">
+                            Your email must be email type!
+                        </b-form-invalid-feedback>
+                        <b-form-valid-feedback :state="emailValidation">
+                            Success!
+                        </b-form-valid-feedback>
+                    </div>
+                    <div class="col-md-3">
+                        <b-form-select class="form-control" v-model="userCreate.role">
+                            <option value="employee">Employee</option>
+                            <option value="saler">Saler</option>
+                            <option value="admin">Admin</option>
+                        </b-form-select>
+                    </div>
+                    <div class="col-md-3">
+                        <b-button  variant="primary" @click="createUser">Create</b-button>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <input type="email" v-model="userCreate.email" class="form-control" placeholder="User email...">
-                </div>
-                <div class="col-md-3">
-                    <select class="form-control" v-model="userCreate.role">
+            </b-form>
+        </div>
+        <!-- Table User -->
+
+        <!--modal-->
+        <b-modal
+                :id="modalEditForm.id"
+                ref="modal"
+                :title="modalEditForm.title"
+                ok-only @hide="resetInfoModal"
+                centered
+        >
+            <b-form @submit.stop.prevent="editUser">
+                <b-input-group prepend="Username">
+                    <b-input v-model="modalEditForm.content.name" :state="nameValidation"></b-input>
+                    <b-form-invalid-feedback :state="nameValidation">
+                        Your name must be longer 8 characters.
+                    </b-form-invalid-feedback>
+                    <b-form-valid-feedback :state="nameValidation">
+                        Success!
+                    </b-form-valid-feedback>
+                </b-input-group>
+                <br>
+                <b-input-group prepend="Email">
+                    <b-form-input v-model="modalEditForm.content.email" :state="emailValidation"></b-form-input>
+                    <b-form-invalid-feedback :state="emailValidation">
+                        Your email must be email type!
+                    </b-form-invalid-feedback>
+                    <b-form-valid-feedback :state="emailValidation">
+                        Success!
+                    </b-form-valid-feedback>
+                </b-input-group>
+                <br>
+                <b-input-group prepend="Role">
+                    <b-form-select class="form-control" v-model="modalEditForm.content.role">
                         <option value="employee">Employee</option>
                         <option value="saler">Saler</option>
                         <option value="admin">Admin</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <button class="btn btn-primary" @click="createUser">Create</button>
-                </div>
-            </div>
-        </div>
-        <!-- Table User -->
+                    </b-form-select>
+                </b-input-group>
+            </b-form>
+        </b-modal>
+        <!--end modal-->
     </div>
 </template>
 
@@ -96,7 +154,18 @@
                   role: 'employee'
                 },
                 currentUser: {},
-                list_users: []
+                list_users: [],
+                perPage: 3,
+                currentPage: 3,
+                fields: ['name', 'email', 'role', 'action'],
+                sortBy: 'name',
+                sortDesc: false,
+                check: false,
+                modalEditForm: {
+                    id: 'modal-edit-form',
+                    title: '',
+                    content: ''
+                }
             }
         },
         created() {
@@ -107,7 +176,8 @@
             getCurrentUser() {
                 axios.get('/getCurrentUser')
                     .then(response => {
-                        this.currentUser = response.data
+                        this.currentUser = response.data;
+                        this.checkIsAdmin();
                     })
                     .catch(error => {
                         console.log(error)
@@ -126,7 +196,7 @@
                     })
             },
             checkIsAdmin() {
-                console.log(this.currentUser);
+
                 if (this.currentUser.roles) {
                     let check = false;
                     this.currentUser.roles.forEach(role => {
@@ -137,18 +207,53 @@
                     return check;
                 }
             },
-            createUser() {
+            createUser(evt) {
+                evt.preventDefault();
+
                 axios.post('/users', {
                     user: this.userCreate
                 })
                     .then( response => {
-                        console.log(response)
-                        this.userCreate = {}
-                        this.getListUsers()
+                        console.log(response);
+                        this.userCreate = {};
+                        this.getListUsers();
                     })
                     .catch(error => {
                         console.log(error)
                     })
+            },
+            editModal(item) {
+                console.log(item)
+            },
+            showEditModal(item, index, button) {
+                console.log(item, index, button);
+                this.modalEditForm.title = `edit: ${index}`;
+                this.$bvModal.show('modal-edit-form');
+                this.modalEditForm.content = item;
+            },
+            resetInfoModal() {
+                this.infoModal.title = '';
+                this.infoModal.content = '';
+            },
+        },
+        computed: {
+            rows() {
+                return this.list_users.length
+            },
+            nameValidation() {
+                if(this.userCreate.name.length == 0) {
+
+                    return null;
+                }
+                return this.userCreate.name.length > 7;
+            },
+            emailValidation() {
+                if (!this.userCreate.email) {
+                    return null;
+                }
+                const emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+                return emailReg.test(this.userCreate.email);
             }
         }
 

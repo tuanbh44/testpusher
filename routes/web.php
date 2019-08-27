@@ -45,8 +45,24 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('users', 'UserController');
 
-Route::get('/getCurrentUser', function () {
-    return Auth::user()->load('roles');
-});
+Route::get('/getCurrentUser', [
+    'as' => 'getCurrentUser',
+    'uses' => 'HomeController@getCurrentUser'
+]);
 
 Route::match(['get', 'post'], '/logout', 'Auth\LoginController@logout')->name('logout');
+
+Route::get('find', [
+    'as' => 'find',
+    'uses' => 'SearchController@find'
+]);
+
+Route::get('product/{id}', [
+   'as' => 'product',
+   'uses' => 'SearchController@getInfo'
+]);
+
+Route::get('index', [
+   'as' => 'index',
+   'uses' => 'SearchController@index'
+]);

@@ -8,6 +8,9 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import BootstrapVue from 'bootstrap-vue';
+
+Vue.use(BootstrapVue);
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -28,7 +31,7 @@ Vue.component('form-input-binding', require('./components/FormInputBinding.vue')
 Vue.component('event-handing', require('./components/EventHanding.vue'));
 Vue.component('parent', require('./components/Parent.vue'));
 Vue.component('User', require('./components/User.vue').default);
-
+Vue.component('paginate', require('./components/Pagination.vue'));
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
